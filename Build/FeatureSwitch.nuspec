@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>FeatureSwitch</id>
+        <version>1.0.0</version>
+        <title>Feature Switch</title>
+        <authors>KCL5South</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A simple package that can be used to manage features within a project.</description>
+    </metadata>
+    <files>
+        <file src="..\FeatureSwitch\bin\Release\FeatureSwitch.dll" target="lib\net35\FeatureSwitch.dll" />
+        <file src="..\FeatureSwitch\bin\Release\FeatureSwitch.pdb" target="lib\net35\FeatureSwitch.pdb" />
+        <file src="..\FeatureSwitch\bin\Release\FeatureSwitch.xml" target="lib\net35\FeatureSwitch.xml" />
+    </files>
+</package>

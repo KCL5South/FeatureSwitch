@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<PropertyGroup>
+		<NUnitExecutable Condition=" '$(NUnitExecutable)' == '' AND '$(PlatformTarget)' == 'x86' ">$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\packages\NUnit.Runners\tools\nunit-console-x86.exe))</NUnitExecutable>
+		<NUnitExecutable Condition=" '$(NUnitExecutable)' == '' AND '$(PlatformTarget)' != 'x86' ">$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\packages\NUnit.Runners\tools\nunit-console.exe))</NUnitExecutable>
+		<RunTests Condition=" '$(RunTests)' == '' ">false</RunTests>
+	</PropertyGroup>	
+
+	<Target Name="RunUnitTests" Condition=" '$(RunTests)' == 'true' ">
+		<Exec 	Command="&quot;$(NUnitExecutable)&quot; &quot;$(MSBuildProjectDirectory)\bin\$(Configuration)\$(AssemblyName).dll&quot; /nologo /xml:$(AssemblyName)_TestResults.xml" 
+				WorkingDirectory="$(MSBuildProjectDirectory)\bin\$(Configuration)"
+				Condition=" '$(NonFeatureFilter)' == '' " />  
+	</Target>
+</Project>

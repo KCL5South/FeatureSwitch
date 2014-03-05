@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Main" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<PropertyGroup>
+		<Configuration Condition=" $(Configuration) == '' ">Debug</Configuration>
+		<AssemblyMajorVersion Condition=" $(AssemblyMajorVersion) == '' ">1</AssemblyMajorVersion>
+        <AssemblyMinorVersion Condition=" $(AssemblyMinorVersion) == '' ">0</AssemblyMinorVersion>
+        <AssemblyBuildNumber Condition=" $(AssemblyBuildNumber) == '' " >0</AssemblyBuildNumber>
+        <AssemblyRevision Condition=" $(AssemblyRevision) == '' " >0</AssemblyRevision>
+        <AssemblyFullVersion>$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyBuildNumber).$(AssemblyRevision)</AssemblyFullVersion>
+        <NuGetFeed>https://www.ikclife.com/KCLNugetFeed/</NuGetFeed>
+        <NuGetAPIKey></NuGetAPIKey>
+        <NuGetPublish Condition=" '$(NuGetPublish)' == '' ">False</NuGetPublish>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Projects Include="..\FeatureSwitch.Test\FeatureSwitch.Test.proj"/>
+		<AssemblyInfoFiles Include="..\FeatureSwitch\AssemblyInfo.cs" />
+		<NuGetSpec Include="FeatureSwitch.nuspec"/>
+	</ItemGroup>
+
+	<Target Name="Main">
+		<CallTarget Targets="ResolveDependencyPackages" />
+		<MSBuild.ExtensionPack.Framework.AssemblyInfo 	AssemblyInfoFiles="@(AssemblyInfoFiles)" 
+														AssemblyVersion="$(AssemblyFullVersion)"
+														AssemblyFileVersion="$(AssemblyFullVersion)"/>
+		<CallTarget Targets="Build" />
+		<CallTarget Targets="NuGet_Pack" />
+		<CallTarget Targets="NuGet_Publish" />
+		<CallTarget Targets="NuGet_Clean" />
+	</Target>
+
+
+	<Target Name="Build">
+		<MSBuild Projects="@(Projects)" Properties="Configuration=$(Configuration)" />
+	</Target>
+
+	<Target Name="Clean">
+		<MSBuild Projects="@(Projects)" Properties="Configuration=$(Configuration)" Targets="Clean" />
+	</Target>
+
+	<Target Name="ReBuild">
+		<CallTarget Targets="Clean;Build"/>
+	</Target>
+
+	<Target Name="NuGet_Pack" Condition="$(Configuration) == 'Release'">
+		<Message Text="Packing %(NuGetSpec.FullPath)"/>
+		<Exec Command="nuget pack &quot;%(NuGetSpec.FullPath)&quot; -Version $(AssemblyFullVersion)" 
+			WorkingDirectory="%(NuGetSpec.RootDir)%(NuGetSpec.Directory)"
+			IgnoreStandardErrorWarningFormat="true" />
+	</Target>
+
+	<Target Name="NuGet_Publish" Condition="$(Configuration) == 'Release' AND $(NuGetPublish) == 'True'">
+		<ItemGroup>
+			<NuGetPackage Include="*.nupkg"/>
+		</ItemGroup>
+		<Message Text="Publishing %(NuGetPackage.FullPath)"/>
+		<Exec Command="nuget push &quot;%(NuGetPackage.FullPath)&quot; -s $(NuGetFeed) $(NuGetAPIKey)" 
+			WorkingDirectory="%(NuGetPackage.RootDir)%(NuGetPackage.Directory)"/>
+	</Target>
+
+	<Target Name="NuGet_Clean" Condition="$(Configuration) == 'Release'">
+		<ItemGroup>
+			<NuGetPackage Include="*.nupkg"/>
+		</ItemGroup>
+		<Delete Files="@(NuGetPackage)"/>
+	</Target>
+
+	<Import Project="$(MSBuildThisFileDirectory)NuGet.targets" />
+	<UsingTask AssemblyFile="$(MSBuildThisFileDirectory)..\packages\MSBuild.Extension.Pack\tools\net35\MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.AssemblyInfo"/>
+</Project>
