@@ -10,11 +10,11 @@ namespace FS
         [TestFixtureSetUp]
         public void SetupFixture()
         {
-            collection.Add(new FeatureModel() { Key = "Feature1", Enabled = false });
-            collection.Add(new FeatureModel() { Key = "Feature1.SubFeature1", Enabled = true });
-            collection.Add(new FeatureModel() { Key = "Feature2", Enabled = true });
-            collection.Add(new FeatureModel() { Key = "Feature2.SubFeature2", Enabled = false });
-            collection.Add(new FeatureModel() { Key = "Feature2.SubFeature2.SubFeature3", Enabled = true });
+            collection.Items.Add(new FeatureModel() { Key = "Feature1", Enabled = false });
+            collection.Items.Add(new FeatureModel() { Key = "Feature1.SubFeature1", Enabled = true });
+            collection.Items.Add(new FeatureModel() { Key = "Feature2", Enabled = true });
+            collection.Items.Add(new FeatureModel() { Key = "Feature2.SubFeature2", Enabled = false });
+            collection.Items.Add(new FeatureModel() { Key = "Feature2.SubFeature2.SubFeature3", Enabled = true });
         }
 
         [Test]
@@ -91,5 +91,37 @@ namespace FS
             catch(System.ArgumentNullException) { }
 
         }
+
+        [Test]
+        public void EndToEnd_False()
+		{
+			string xml = @"<?xml version=""1.0"" encoding=""utf-8""?>
+
+<Features xmlns=""https://www.kcl-data.com"">
+    <Feature Key=""Login"" Enabled=""false""/>
+</Features>";
+
+			System.IO.MemoryStream stream = new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(xml));
+
+			IFeatureSwitch fs = FeatureSwitch.Create(stream);
+
+			Assert.IsFalse(fs["Login"]);
+		}
+
+        [Test]
+        public void EndToEnd_True()
+		{
+			string xml = @"<?xml version=""1.0"" encoding=""utf-8""?>
+
+<Features xmlns=""https://www.kcl-data.com"">
+    <Feature Key=""Login"" Enabled=""true""/>
+</Features>";
+
+			System.IO.MemoryStream stream = new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(xml));
+
+			IFeatureSwitch fs = FeatureSwitch.Create(stream);
+
+			Assert.IsTrue(fs["Login"]);
+		}
     }
 }

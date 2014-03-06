@@ -22,7 +22,7 @@ namespace FS
             if(collection == null)
                 throw new System.ArgumentNullException("collection");
             
-            foreach(FeatureModel model in collection)
+            foreach(FeatureModel model in collection.Items)
             {
                 if(Features.ContainsKey(model.Key))
                     Features[model.Key] = model.Enabled;

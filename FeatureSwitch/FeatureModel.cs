@@ -1,13 +1,21 @@
-using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace FS 
 {   
-    [DataContract(Namespace = "https://www.kcl-data.com")]
-    internal class FeatureModel
+    /// <summary>
+    ///     The model representing a single feature's status.
+    /// </summary>
+    public class FeatureModel
     {
-        [DataMember]
+        /// <summary>
+        ///     Gets or sets the Key of the feature.
+        /// </summary>
+        [XmlAttribute]
         public string Key { get; set; }
-        [DataMember]
+        /// <summary>
+        ///     Gets or sets the Enabled status of the feature.
+        /// </summary>
+        [XmlAttribute]
         public bool Enabled { get; set; }
     }
 }

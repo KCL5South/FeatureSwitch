@@ -22,41 +22,33 @@ _Usage_:
 
 _Configuration_:
 
-*FeatureSwitch* uses [Data Contract Serialization](http://msdn.microsoft.com/en-us/library/system.runtime.serialization.datacontractserializer.aspx).  The schema of the configuration file is as follows:
+*FeatureSwitch* uses [Xml Serialization](http://msdn.microsoft.com/en-us/library/182eeyhh.aspx).  The schema of the configuration file is as follows:
 
 	<?xml version="1.0" encoding="utf-8"?>
 	<xs:schema targetNamespace="https://www.kcl-data.com"
-		elementFormDefault="qualified"
-		xmlns="https://www.kcl-data.com"
-		xmlns:xs="http://www.w3.org/2001/XMLSchema">
-		<xs:element name="Features" nillable="true">
-			<xs:complexType>
-				<xs:sequence>
-					<xs:element name="Feature" maxOccurs="unbounded" minOccurs="0" nillable="false">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="Key" type="xs:string" maxOccurs="1" minOccurs="1" nillable="false"/>
-								<xs:element name="Enabled" type="xs:boolean" maxOccurs="1" minOccurs="1" nillable="false"/>
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-				</xs:sequence>
-			</xs:complexType>
-		</xs:element>
+	    elementFormDefault="qualified"
+	    xmlns="https://www.kcl-data.com"
+	    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	    <xs:element name="Features" nillable="true">
+	        <xs:complexType>
+	            <xs:sequence>
+	                <xs:element name="Feature" maxOccurs="unbounded" minOccurs="0" nillable="false">
+	                    <xs:complexType>
+	                        <xs:attribute name="Key" type="xs:string"/>
+	                        <xs:attribute name="Enabled" type="xs:boolean"/>
+	                    </xs:complexType>
+	                </xs:element>
+	            </xs:sequence>
+	        </xs:complexType>
+	    </xs:element>
 	</xs:schema>
 
 So, given the following configuration file:
 
 	<?xml version="1.0" encoding="utf-8"?>
 	<Features xmlns="https://www.kcl-data.com">
-		<Feature>
-			<Key>Feature1</Key>
-			<Enabled>false</Enabled>
-		</Feature>
-		<Feature>
-			<Key>Feature1.SubFeature</Key>
-			<Enabled>true</Enabled>
-		</Feature>
+		<Feature Key="Feature1" Enabled="false" />
+		<Feature Key="Feature1.SubFeature" Enabled="true" />
 	</Features>
 
 The following code would produce `False`:
